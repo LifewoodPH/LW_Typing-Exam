@@ -11,6 +11,11 @@ export interface CharDisplayState {
   status: 'pending' | 'correct' | 'incorrect' | 'extra' | 'missed';
 }
 
+export interface Profile {
+  user_id: string;
+  created_at: string;
+}
+
 export interface TestStats {
   wpm: number;
   accuracy: number; // Word-based accuracy: (Correct Words / Words Processed) * 100

@@ -24,7 +24,7 @@ const USER_ID_PREFIXES = [
   'PHJJ',
   'PHNX',
   'PHUCLM',
-  'PHUCTU',
+  'PHCTU',
   'PHUCMC',
   'PHLWP'
 ];
@@ -122,7 +122,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn, onAdminSignIn }) => {
                   id="username"
                   name="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setUsername(e.target.value)}
                   className="w-full px-4 py-2.5 bg-lifewood-sea-salt border border-lifewood-dark-serpent border-opacity-20 rounded-md focus:ring-2 focus:ring-lifewood-saffaron focus:border-lifewood-saffaron placeholder-lifewood-dark-serpent placeholder-opacity-50 text-lifewood-dark-serpent"
                   placeholder=" "
                   autoFocus
@@ -138,7 +138,7 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn, onAdminSignIn }) => {
                   id="password"
                   name="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   className="w-full px-4 py-2.5 bg-lifewood-sea-salt border border-lifewood-dark-serpent border-opacity-20 rounded-md focus:ring-2 focus:ring-lifewood-saffaron focus:border-lifewood-saffaron placeholder-lifewood-dark-serpent placeholder-opacity-50 text-lifewood-dark-serpent"
                   placeholder=" "
                   disabled={isAdminLoading}
@@ -169,11 +169,11 @@ const SignIn: React.FC<SignInProps> = ({ onSignIn, onAdminSignIn }) => {
                   id="userIdPrefix"
                   name="userIdPrefix"
                   value={prefix}
-                  onChange={(e) => setPrefix(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setPrefix(e.target.value)}
                   className="h-full z-10 pl-4 pr-10 py-2.5 bg-lifewood-sea-salt border border-lifewood-dark-serpent border-opacity-20 rounded-l-md focus:ring-2 focus:ring-lifewood-saffaron focus:border-lifewood-saffaron text-lifewood-dark-serpent font-semibold"
                   disabled={isLoading}
                 >
-                  {USER_ID_PREFIXES.map(p => <option key={p} value={p}>{p}</option>)}
+                  {USER_ID_PREFIXES.map((p: string) => <option key={p} value={p}>{p}</option>)}
                 </select>
                 <input
                   type="text"

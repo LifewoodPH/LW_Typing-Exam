@@ -21,7 +21,7 @@ const USER_ID_PREFIXES = [
   'PHBYUUG',
   'PHLWP',
   'PHUCLM',
-  'PHUCTU',
+  'PHCTU',
   'PHUCMC',
   'No Prefix' // Added option for no prefix
 ];
@@ -119,15 +119,15 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
 
     // Apply prefix filter
     if (profilesFilter === 'No Prefix') {
-      filtered = filtered.filter(p => isUserWithoutPrefix(p.user_id));
+      filtered = filtered.filter((p: Profile) => isUserWithoutPrefix(p.user_id));
     } else if (profilesFilter !== 'All Users') {
-      filtered = filtered.filter(p => p.user_id.startsWith(profilesFilter));
+      filtered = filtered.filter((p: Profile) => p.user_id.startsWith(profilesFilter));
     }
 
     // Apply search filter
     if (searchQuery.trim() !== '') {
       const lowerQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(p => p.user_id.toLowerCase().includes(lowerQuery));
+      filtered = filtered.filter((p: Profile) => p.user_id.toLowerCase().includes(lowerQuery));
     }
 
     return filtered;
@@ -138,15 +138,15 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
 
     // Apply prefix filter
     if (resultsFilter === 'No Prefix') {
-      filtered = filtered.filter(r => isUserWithoutPrefix(r.user_id));
+      filtered = filtered.filter((r: TestResult) => isUserWithoutPrefix(r.user_id));
     } else if (resultsFilter !== 'All Users') {
-      filtered = filtered.filter(r => r.user_id.startsWith(resultsFilter));
+      filtered = filtered.filter((r: TestResult) => r.user_id.startsWith(resultsFilter));
     }
 
     // Apply search filter
     if (searchQuery.trim() !== '') {
       const lowerQuery = searchQuery.toLowerCase();
-      filtered = filtered.filter(r => r.user_id.toLowerCase().includes(lowerQuery));
+      filtered = filtered.filter((r: TestResult) => r.user_id.toLowerCase().includes(lowerQuery));
     }
 
     return filtered;
@@ -159,9 +159,9 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
       if (prefix === 'All Users') {
         counts[prefix] = profiles.length;
       } else if (prefix === 'No Prefix') {
-        counts[prefix] = profiles.filter(p => isUserWithoutPrefix(p.user_id)).length; // Correct count for "No Prefix"
+        counts[prefix] = profiles.filter((p: Profile) => isUserWithoutPrefix(p.user_id)).length; // Correct count for "No Prefix"
       } else {
-        counts[prefix] = profiles.filter(p => p.user_id.startsWith(prefix)).length;
+        counts[prefix] = profiles.filter((p: Profile) => p.user_id.startsWith(prefix)).length;
       }
     });
     return counts;
@@ -174,9 +174,9 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
       if (prefix === 'All Users') {
         counts[prefix] = testResults.length;
       } else if (prefix === 'No Prefix') {
-        counts[prefix] = testResults.filter(r => isUserWithoutPrefix(r.user_id)).length; // Correct count for "No Prefix"
+        counts[prefix] = testResults.filter((r: TestResult) => isUserWithoutPrefix(r.user_id)).length; // Correct count for "No Prefix"
       } else {
-        counts[prefix] = testResults.filter(r => r.user_id.startsWith(prefix)).length;
+        counts[prefix] = testResults.filter((r: TestResult) => r.user_id.startsWith(prefix)).length;
       }
     });
     return counts;
@@ -186,15 +186,16 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
     const timestamp = new Date().toISOString().slice(0, 10); // YYYY-MM-DD
     if (activeTab === 'profiles') {
       const filename = `profiles-${profilesFilter}-${timestamp}.csv`;
-      const dataToExport = filteredProfiles.map(p => ({ user_id: p.user_id, created_at: p.created_at }));
+      const dataToExport = filteredProfiles.map((p: Profile) => ({ user_id: p.user_id, created_at: p.created_at }));
       exportToCsv(filename, dataToExport);
     } else { // 'results'
       const filename = `test-results-${resultsFilter}-${timestamp}.csv`;
-      exportToCsv(filename, filteredResults);
+      const dataToExport = filteredResults.map((r: TestResult) => ({ ...r }));
+      exportToCsv(filename, dataToExport);
     }
   }, [activeTab, filteredProfiles, filteredResults, profilesFilter, resultsFilter]);
 
-  const renderTable = (headers: string[], data: any[], filterValue: string, setFilter: (val: string) => void, prefixes: string[], counts: { [key: string]: number }) => (
+  const renderTable = (headers: string[], data: any[], filterValue: string, setFilter: (val: string) => void, counts: { [key: string]: number }) => (
     <div className="bg-gray-800 rounded-lg shadow-lg overflow-hidden">
       <div className="p-4 border-b border-gray-700 flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center space-x-4">
@@ -203,7 +204,7 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
             <select
               id="user-filter"
               value={filterValue}
-              onChange={e => setFilter(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilter(e.target.value)}
               className="admin-select sm:w-auto px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-lifewood-saffaron"
               aria-label="Filter by User ID Prefix"
             >
@@ -217,7 +218,7 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
               type="text"
               placeholder="e.g. PHBYU..."
               value={searchQuery}
-              onChange={e => setSearchQuery(e.target.value)}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
               className="sm:w-auto px-3 py-2 bg-gray-900 border border-gray-600 rounded-md text-gray-200 focus:outline-none focus:ring-2 focus:ring-lifewood-saffaron"
               aria-label="Search by User ID"
             />
@@ -324,8 +325,8 @@ const AdminDashboard: React.FC<{ onSignOut: () => void }> = ({ onSignOut }) => {
           </div>
         ) : (
           <div>
-            {activeTab === 'profiles' && renderTable(['User ID', 'Created At'], filteredProfiles.map(p => ({ user_id: p.user_id, created_at: p.created_at })), profilesFilter, setProfilesFilter, USER_ID_PREFIXES, profileCountsByPrefix)}
-            {activeTab === 'results' && renderTable(['ID', 'Created At', 'User ID', 'WPM', 'Accuracy', 'True Accuracy', 'Pass Status', 'Score'], filteredResults, resultsFilter, setResultsFilter, USER_ID_PREFIXES, resultCountsByPrefix)}
+            {activeTab === 'profiles' && renderTable(['User ID', 'Created At'], filteredProfiles.map((p: Profile) => ({ user_id: p.user_id, created_at: p.created_at })), profilesFilter, setProfilesFilter, profileCountsByPrefix)}
+            {activeTab === 'results' && renderTable(['ID', 'Created At', 'User ID', 'WPM', 'Accuracy', 'True Accuracy', 'Pass Status', 'Score'], filteredResults.map((r: TestResult) => ({ ...r })), resultsFilter, setResultsFilter, resultCountsByPrefix)}
           </div>
         )}
       </main>
